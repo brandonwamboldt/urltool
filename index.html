@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>URL Encoder/Decoder</title>
+
+    <style>
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #333;
+    }
+
+    textarea {
+        background: #EEF;
+    }
+
+    h1 {
+        font-size: 36px;
+        font-weight: 500;
+        line-height: 1.1;
+        border-bottom: 1px solid #aaa;
+    }
+
+    .container {
+        margin: 0 -20px;
+    }
+
+    .container:before, .container:after {
+        display: table;
+        content: " ";
+    }
+
+    .container:after {
+        clear: both;
+    }
+
+    .col-4 {
+        float: left;
+        width: 33%;
+        padding: 0 20px;
+        border-bo
+    }
+
+    .col-8 {
+        float: left;
+        width: 67%;
+        padding: 0 20px;
+        border-bo
+    }
+
+    a {
+        color: #337ab7;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #23527c;
+        text-decoration: underline;
+        outline: 0;
+    }
+
+    table {
+        border: 1px solid #ddd;
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+
+    table th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+        text-align: left;
+    }
+
+    table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+    .table-keyval tbody th {
+        background: #eee;
+    }
+
+    footer {
+        clear: both;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        margin-top: 30px;
+        color: #767676;
+        text-align: center;
+        border-top: 1px solid #e5e5e5;
+    }
+
+    footer p {
+        text-align: center;
+        color: #767676;
+    }
+    </style>
+</head>
+
+<body>
+    <h1>URL Encoder/Decoder</h1>
+
+    <div class="container">
+        <div class="col-4">
+            <textarea id="user-input" rows="20" style="width:100%;max-width:100%;min-width:100%"></textarea>
+            <input type="button" onclick="encode()" value="Encode">
+            <input type="button" onclick="decode()" value="Decode">
+            <input type="button" onclick="parse()" value="Parse">
+
+            <ul>
+                <li>Input a string of text and encode or decode it as you like.</li>
+                <li>Handy for turning encoded JavaScript URLs from complete gibberish into readable gibberish.</li>
+                <li>If you'd like to have the URL Decoder/Encoder for offline use, just view source and save to your hard drive.</li>
+            </ul>
+        </div>
+
+        <div class="col-8">
+            <table id="url-info" class="table-keyval">
+                <tbody>
+                    <tr id="url-protocol">
+                        <th style="width:140px">Protocol</th>
+                        <td></td>
+                    </tr>
+
+                    <tr id="url-hostname">
+                        <th style="width:140px">Host Name</th>
+                        <td></td>
+                    </tr>
+
+                    <tr id="url-origin">
+                        <th style="width:140px">Origin</th>
+                        <td></td>
+                    </tr>
+
+                    <tr id="url-pathname">
+                        <th style="width:140px">Path Name</th>
+                        <td></td>
+                    </tr>
+
+                    <tr id="url-port">
+                        <th style="width:140px">Port</th>
+                        <td></td>
+                    </tr>
+
+                    <tr id="url-hash">
+                        <th style="width:140px">Hash</th>
+                        <td></td>
+                    </tr>
+
+                    <tr id="url-querystring">
+                        <th style="width:140px">Query String</th>
+                        <td></td>
+                    </tr>
+
+                    <tr id="url-queryparams">
+                        <th style="width:140px">Query Parameters</th>
+                        <td>
+                            <table><tbody></tbody></table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>
+            Created by <a href="https://github.com/brandonwamboldt">@brandonwamboldt</a> &middot; <a href="https://github.com/brandonwamboldt/urltool/">Fork on GitHub</a><br>
+            Code licensed under <a href="https://github.com/twbs/bootstrap/blob/master/LICENSE">MIT</a>, documentation under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.
+        </p>
+    </footer>
+
+    <script>
+    var textarea = document.getElementById('user-input');
+    var parser = document.createElement('a');
+
+    function encode() {
+        textarea.value = encodeURIComponent(textarea.value).replace(/'/g, "%27").replace(/"/g, "%22");
+    }
+
+    function decode() {
+        parse();
+        textarea.value = decodeURIComponent(textarea.value).replace(/\+/g, ' ');
+    }
+
+    function parse() {
+        parser.href = textarea.value;
+
+        document.querySelector('#url-protocol td').innerHTML    = parser.protocol.replace(/:/, '');
+        document.querySelector('#url-hostname td').innerHTML    = parser.hostname;
+        document.querySelector('#url-port td').innerHTML        = parser.port;
+        document.querySelector('#url-origin td').innerHTML      = parser.origin;
+        document.querySelector('#url-pathname td').innerHTML    = parser.pathname;
+        document.querySelector('#url-querystring td').innerHTML = parser.search;
+        document.querySelector('#url-hash td').innerHTML        = parser.hash;
+
+        var params = '';
+        var qp = parser.search.substring(1).split(/&/g);
+
+        for (var i = 0; i < qp.length; i++) {
+            var q = qp[i].match(/(.*?)=(.*)/);
+            params += '<tr><td style="width:120px;">' + q[1] + '</td><td>' + q[2] + '</td></tr>';
+        }
+
+        document.querySelector('#url-queryparams tbody').innerHTML = params;
+    }
+    </script>
+</body>
+
+</html>
